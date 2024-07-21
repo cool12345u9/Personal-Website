@@ -1,63 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Study Material by Dushyant</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        .header {
-            background-color: #4CAF50;
-            color: white;
-            padding: 15px;
-            text-align: center;
-        }
-        .hero {
-            background-image: url('your-background-image.jpg');
-            background-size: cover;
-            background-position: center;
-            height: 300px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            text-align: center;
-        }
-        .hero h1 {
-            font-size: 3em;
-        }
-        .content {
-            padding: 20px;
-        }
-        .footer {
-            background-color: #4CAF50;
-            color: white;
-            text-align: center;
-            padding: 10px;
-            position: fixed;
-            width: 100%;
-            bottom: 0;
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1>Study Material by Dushyant</h1>
-    </div>
-    <div class="hero">
-        <h1>Welcome to My Study Materials</h1>
-    </div>
-    <div class="content">
-        <h2>About This Site</h2>
-        <p>This website is dedicated to providing valuable study materials for students. Whether you are preparing for exams, looking for additional resources, or seeking to deepen your understanding of various subjects, you'll find helpful materials here.</p>
-    </div>
-    <div class="footer">
-        <p>&copy; 2024 Study Material by Dushyant. All rights reserved.</p>
-    </div>
-</body>
-</html>
+import random
+
+class Board:
+    def __init__(self):
+        self.board = [' '] * 52  # A simplified representation of the Ludo board with 52 positions
+
+class Player:
+    def __init__(self, name, start_position):
+        self.name = name
+        self.pieces = [start_position] * 4  # Each player has 4 pieces starting at the start_position
+        self.start_position = start_position
+        self.home = False  # This will be set to True when all pieces reach the home
+
+    def move_piece(self, piece_index, steps):
+        current_position = self.pieces[piece_index]
+        new_position = (current_position + steps) % 52
+        self.pieces[piece_index] = new_position
+        print(f"{self.name} moved piece {piece_index} to position {new_position}")
+
+def roll_dice():
+    return random.randint(1, 6)
+
+def main():
+    board = Board()
+    players = [Player("Player 1", 0), Player("Player 2", 13), Player("Player 3", 26), Player("Player 4", 39)]
+
+    current_player_index = 0
+    game_over = False
+
+    while not game_over:
+        current_player = players[current_player_index]
+        dice_roll = roll_dice()
+        print(f"{current_player.name} rolled a {dice_roll}")
+
+        # For simplicity, we'll move the first piece of the player
+        current_player.move_piece(0, dice_roll)
+
+        # Check for win condition (for simplicity, if one piece reaches the start_position + 50)
+        if any(piece == (current_player.start_position + 50) % 52 for piece in current_player.pieces):
+            current_player.home = True
+            print(f"{current_player.name} has won the game!")
+            game_over = True
+
+        # Move to the next player
+        current_player_index = (current_player_index + 1) % 4
+
+if __name__ == "__main__":
+    main()
