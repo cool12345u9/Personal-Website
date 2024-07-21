@@ -1,43 +1,63 @@
-def add(x, y):
-    return x + y
-
-def subtract(x, y):
-    return x - y
-
-def multiply(x, y):
-    return x * y
-
-def divide(x, y):
-    if y == 0:
-        return "Error! Division by zero."
-    return x / y
-
-def calculator():
-    print("Select operation:")
-    print("1. Add")
-    print("2. Subtract")
-    print("3. Multiply")
-    print("4. Divide")
-    
-    choice = input("Enter choice(1/2/3/4): ")
-    
-    if choice in ['1', '2', '3', '4']:
-        num1 = float(input("Enter first number: "))
-        num2 = float(input("Enter second number: "))
-        
-        if choice == '1':
-            print(f"{num1} + {num2} = {add(num1, num2)}")
-        
-        elif choice == '2':
-            print(f"{num1} - {num2} = {subtract(num1, num2)}")
-        
-        elif choice == '3':
-            print(f"{num1} * {num2} = {multiply(num1, num2)}")
-        
-        elif choice == '4':
-            print(f"{num1} / {num2} = {divide(num1, num2)}")
-    else:
-        print("Invalid Input")
-
-# Commented out the function call to prevent execution
-# calculator()
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Material by Dushyant</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        .hero {
+            background-image: url('your-background-image.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 3em;
+        }
+        .content {
+            padding: 20px;
+        }
+        .footer {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Study Material by Dushyant</h1>
+    </div>
+    <div class="hero">
+        <h1>Welcome to My Study Materials</h1>
+    </div>
+    <div class="content">
+        <h2>About This Site</h2>
+        <p>This website is dedicated to providing valuable study materials for students. Whether you are preparing for exams, looking for additional resources, or seeking to deepen your understanding of various subjects, you'll find helpful materials here.</p>
+    </div>
+    <div class="footer">
+        <p>&copy; 2024 Study Material by Dushyant. All rights reserved.</p>
+    </div>
+</body>
+</html>
