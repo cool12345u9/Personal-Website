@@ -1,99 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tic Tac Toe</title>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-        }
-        .board {
-            display: grid;
-            grid-template-columns: repeat(3, 100px);
-            gap: 5px;
-        }
-        .cell {
-            width: 100px;
-            height: 100px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: white;
-            font-size: 2em;
-            cursor: pointer;
-            border: 2px solid #333;
-        }
-        .cell:hover {
-            background-color: #ddd;
-        }
-        .message {
-            margin-top: 20px;
-            text-align: center;
-        }
-    </style>
-</head>
-<body>
-    <div>
-        <div class="board" id="board">
-            <div class="cell" data-index="0"></div>
-            <div class="cell" data-index="1"></div>
-            <div class="cell" data-index="2"></div>
-            <div class="cell" data-index="3"></div>
-            <div class="cell" data-index="4"></div>
-            <div class="cell" data-index="5"></div>
-            <div class="cell" data-index="6"></div>
-            <div class="cell" data-index="7"></div>
-            <div class="cell" data-index="8"></div>
-        </div>
-        <div class="message" id="message"></div>
-    </div>
+def add(x, y):
+    return x + y
 
-    <script>
-        const board = document.getElementById('board');
-        const message = document.getElementById('message');
-        let currentPlayer = 'X';
-        let gameBoard = Array(9).fill(null);
+def subtract(x, y):
+    return x - y
 
-        board.addEventListener('click', (event) => {
-            const index = event.target.dataset.index;
-            if (index !== undefined && !gameBoard[index]) {
-                gameBoard[index] = currentPlayer;
-                event.target.textContent = currentPlayer;
-                if (checkWin()) {
-                    message.textContent = `Player ${currentPlayer} wins!`;
-                    board.style.pointerEvents = 'none';
-                } else if (gameBoard.every(cell => cell)) {
-                    message.textContent = "It's a draw!";
-                } else {
-                    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-                }
-            }
-        });
+def multiply(x, y):
+    return x * y
 
-        function checkWin() {
-            const winPatterns = [
-                [0, 1, 2],
-                [3, 4, 5],
-                [6, 7, 8],
-                [0, 3, 6],
-                [1, 4, 7],
-                [2, 5, 8],
-                [0, 4, 8],
-                [2, 4, 6]
-            ];
+def divide(x, y):
+    if y == 0:
+        return "Error! Division by zero."
+    return x / y
 
-            return winPatterns.some(pattern => {
-                const [a, b, c] = pattern;
-                return gameBoard[a] && gameBoard[a] === gameBoard[b] && gameBoard[a] === gameBoard[c];
-            });
-        }
-    </script>
-</body>
-</html>
+def calculator():
+    print("Select operation:")
+    print("1. Add")
+    print("2. Subtract")
+    print("3. Multiply")
+    print("4. Divide")
+    
+    choice = input("Enter choice(1/2/3/4): ")
+    
+    if choice in ['1', '2', '3', '4']:
+        num1 = float(input("Enter first number: "))
+        num2 = float(input("Enter second number: "))
+        
+        if choice == '1':
+            print(f"{num1} + {num2} = {add(num1, num2)}")
+        
+        elif choice == '2':
+            print(f"{num1} - {num2} = {subtract(num1, num2)}")
+        
+        elif choice == '3':
+            print(f"{num1} * {num2} = {multiply(num1, num2)}")
+        
+        elif choice == '4':
+            print(f"{num1} / {num2} = {divide(num1, num2)}")
+    else:
+        print("Invalid Input")
+
+# Commented out the function call to prevent execution
+# calculator()
