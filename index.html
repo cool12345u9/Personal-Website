@@ -1,48 +1,118 @@
-import random
+import pygame
+import sys
 
-class Board:
-    def __init__(self):
-        self.board = [' '] * 52  # A simplified representation of the Ludo board with 52 positions
+# Initialize Pygame
+pygame.init()
 
-class Player:
-    def __init__(self, name, start_position):
-        self.name = name
-        self.pieces = [start_position] * 4  # Each player has 4 pieces starting at the start_position
-        self.start_position = start_position
-        self.home = False  # This will be set to True when all pieces reach the home
+# Constants
+WIDTH, HEIGHT = 800, 600
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+PADDLE_WIDTH, PADDLE_HEIGHT = 10, 100
+BALL_SIZE = 10
+PADDLE_SPEED = 6
+BALL_SPEED_X, BALL_SPEED_Y = 4, 4
 
-    def move_piece(self, piece_index, steps):
-        current_position = self.pieces[piece_index]
-        new_position = (current_position + steps) % 52
-        self.pieces[piece_index] = new_position
-        print(f"{self.name} moved piece {piece_index} to position {new_position}")
+# Set up the display
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Ping Pong Game")
 
-def roll_dice():
-    return random.randint(1, 6)
+# Paddle class
+class Paddle:
+    def __init__(self, x, y):
+        self.rect = pygame.Rect(x, y, PADDLE_WIDTH, PADDLE_HEIGHT)
 
-def main():
-    board = Board()
-    players = [Player("Player 1", 0), Player("Player 2", 13), Player("Player 3", 26), Player("Player 4", 39)]
+    def draw(self):
+        pygame.draw.rect(screen, WHITE, self.rect)
 
-    current_player_index = 0
-    game_over = False
+    def move(self, y_change):
+        self.rect.y += y_change
+        if self.rect.top < 0:
+            self.rect.top = 0
+        if self.rect.bottom > HEIGHT:
+            self.rect.bottom = HEIGHT
 
-    while not game_over:
-        current_player = players[current_player_index]
-        dice_roll = roll_dice()
-        print(f"{current_player.name} rolled a {dice_roll}")
+# Ball class
+class Ball:
+    def __init__(self, x, y):
+        self.rect = pygame.Rect(x, y, BALL_SIZE, BALL_SIZE)
+        self.speed_x = BALL_SPEED_X
+        self.speed_y = BALL_SPEED_Y
 
-        # For simplicity, we'll move the first piece of the player
-        current_player.move_piece(0, dice_roll)
+    def draw(self):
+        pygame.draw.ellipse(screen, WHITE, self.rect)
 
-        # Check for win condition (for simplicity, if one piece reaches the start_position + 50)
-        if any(piece == (current_player.start_position + 50) % 52 for piece in current_player.pieces):
-            current_player.home = True
-            print(f"{current_player.name} has won the game!")
-            game_over = True
+    def move(self):
+        self.rect.x += self.speed_x
+        self.rect.y += self.speed_y
 
-        # Move to the next player
-        current_player_index = (current_player_index + 1) % 4
+        # Collision with top/bottom walls
+        if self.rect.top <= 0 or self.rect.bottom >= HEIGHT:
+            self.speed_y = -self.speed_y
 
-if __name__ == "__main__":
-    main()
+        # Collision with left/right walls (scoring)
+        if self.rect.left <= 0 or self.rect.right >= WIDTH:
+            self.speed_x = -self.speed_x
+            return True  # Indicates a point has been scored
+
+        return False
+
+    def reset(self):
+        self.rect.center = (WIDTH // 2, HEIGHT // 2)
+        self.speed_x = BALL_SPEED_X * (-1 if self.speed_x > 0 else 1)
+        self.speed_y = BALL_SPEED_Y * (-1 if self.speed_y > 0 else 1)
+
+# Initialize paddles and ball
+left_paddle = Paddle(50, HEIGHT // 2 - PADDLE_HEIGHT // 2)
+right_paddle = Paddle(WIDTH - 50 - PADDLE_WIDTH, HEIGHT // 2 - PADDLE_HEIGHT // 2)
+ball = Ball(WIDTH // 2, HEIGHT // 2)
+
+# Game loop
+clock = pygame.time.Clock()
+left_score = 0
+right_score = 0
+
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+
+    # Get pressed keys
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_w]:
+        left_paddle.move(-PADDLE_SPEED)
+    if keys[pygame.K_s]:
+        left_paddle.move(PADDLE_SPEED)
+    if keys[pygame.K_UP]:
+        right_paddle.move(-PADDLE_SPEED)
+    if keys[pygame.K_DOWN]:
+        right_paddle.move(PADDLE_SPEED)
+
+    # Move the ball
+    if ball.move():
+        if ball.rect.right >= WIDTH:
+            left_score += 1
+        elif ball.rect.left <= 0:
+            right_score += 1
+        ball.reset()
+
+    # Check for collisions with paddles
+    if ball.rect.colliderect(left_paddle.rect) or ball.rect.colliderect(right_paddle.rect):
+        ball.speed_x = -ball.speed_x
+
+    # Draw everything
+    screen.fill(BLACK)
+    left_paddle.draw()
+    right_paddle.draw()
+    ball.draw()
+
+    # Display scores
+    font = pygame.font.Font(None, 74)
+    text = font.render(str(left_score), 1, WHITE)
+    screen.blit(text, (WIDTH // 4, 10))
+    text = font.render(str(right_score), 1, WHITE)
+    screen.blit(text, (WIDTH * 3 // 4, 10))
+
+    pygame.display.flip()
+    clock.tick(60)
